@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from pathlib import Path
 from typing import List, Dict
 import json
@@ -7,25 +6,17 @@ from discord.ext import commands  # type: ignore
 from discord.ext.commands import Bot  # type: ignore
 from discord.ext.commands.context import Context  # type: ignore
 from discord.player import FFmpegPCMAudio  # type: ignore
-
-
-@dataclass
-class Sound:
-    name: str
-    description: str
-    file: str
-    category: str
-
+from soundbot.soundboard import models
 
 sounds_file = Path(__file__).parents[2] / "soundboard/data/sounds.json"
-sounds_list: List[Sound] = []
+sounds_list: List[models.Sound] = []
 if sounds_file.exists():
     with open(sounds_file, encoding="utf8") as fd:
-        sounds_list = [Sound(**a) for a in json.load(fd)["sounds"]]  # type: ignore
+        sounds_list = [models.Sound(**a) for a in json.load(fd)["sounds"]]  # type: ignore
 
 
-SOUNDS_DICT: Dict[str, Sound] = {s.name: s for s in sounds_list}
-SOUNDS_CATEGORIES: Dict[str, List[Sound]] = {}
+SOUNDS_DICT: Dict[str, models.Sound] = {s.name: s for s in sounds_list}
+SOUNDS_CATEGORIES: Dict[str, List[models.Sound]] = {}
 for s in sounds_list:
     SOUNDS_CATEGORIES.setdefault(s.category, []).append(s)
 
